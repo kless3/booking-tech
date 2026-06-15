@@ -11,7 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
 @Table(name = "users")
-class UserEntity(
+class User(
     @Id
     @Column(nullable = false, updatable = false)
     val id: UUID = UUID.randomUUID(),

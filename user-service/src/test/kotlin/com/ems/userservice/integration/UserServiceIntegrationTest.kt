@@ -1,6 +1,6 @@
 package com.ems.userservice.integration
 
-import com.ems.userservice.domain.UserEntity
+import com.ems.userservice.domain.User
 import com.ems.userservice.repository.UserRepository
 import com.ems.userservice.service.UserService
 import java.util.Base64
@@ -76,12 +76,12 @@ class UserServiceIntegrationTest {
 
     @Test
     fun `enforces unique email in database schema`() {
-        val firstUser = UserEntity(
+        val firstUser = User(
             email = "alice@example.com",
             encryptedDek = "encrypted-1",
             iv = "iv-1",
         )
-        val duplicateUser = UserEntity(
+        val duplicateUser = User(
             email = "alice@example.com",
             encryptedDek = "encrypted-2",
             iv = "iv-2",

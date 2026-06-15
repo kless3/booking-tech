@@ -1,8 +1,8 @@
 package com.ems.userservice.controller
 
-import com.ems.userservice.dto.CreateUserRequest
-import com.ems.userservice.dto.DecryptedKeyResponse
-import com.ems.userservice.dto.UserResponse
+import com.ems.userservice.dto.request.CreateUserRequest
+import com.ems.userservice.dto.response.DecryptedKeyResponse
+import com.ems.userservice.dto.response.UserResponse
 import com.ems.userservice.service.UserService
 import jakarta.validation.Valid
 import java.net.URI

@@ -1,7 +1,7 @@
 package com.ems.userservice.service
 
 import com.ems.userservice.crypto.CryptoService
-import com.ems.userservice.domain.UserEntity
+import com.ems.userservice.domain.User
 import com.ems.userservice.exception.EmailAlreadyExistsException
 import com.ems.userservice.exception.UserNotFoundException
 import com.ems.userservice.repository.UserRepository
@@ -25,13 +25,13 @@ class UserServiceTest {
     @Test
     fun `creates user with normalized email and encrypted dek`() {
         Mockito.`when`(userRepository.existsByEmail("alice@example.com")).thenReturn(false)
-        Mockito.`when`(userRepository.save(Mockito.any(UserEntity::class.java))).thenAnswer { invocation ->
-            invocation.getArgument<UserEntity>(0)
+        Mockito.`when`(userRepository.save(Mockito.any(User::class.java))).thenAnswer { invocation ->
+            invocation.getArgument<User>(0)
         }
 
         val response = userService.createUser("  Alice@Example.COM  ")
 
-        val userCaptor = ArgumentCaptor.forClass(UserEntity::class.java)
+        val userCaptor = ArgumentCaptor.forClass(User::class.java)
         Mockito.verify(userRepository).save(userCaptor.capture())
         val savedUser = userCaptor.value
 
@@ -52,7 +52,7 @@ class UserServiceTest {
             userService.createUser("alice@example.com")
         }
 
-        Mockito.verify(userRepository, Mockito.never()).save(Mockito.any(UserEntity::class.java))
+        Mockito.verify(userRepository, Mockito.never()).save(Mockito.any(User::class.java))
     }
 
     @Test
@@ -60,7 +60,7 @@ class UserServiceTest {
         val dek = cryptoService.generateDek()
         val encryptedDek = cryptoService.encryptDek(dek)
         val userId = UUID.randomUUID()
-        val user = UserEntity(
+        val user = User(
             id = userId,
             email = "alice@example.com",
             encryptedDek = encryptedDek.ciphertextBase64,
@@ -77,7 +77,7 @@ class UserServiceTest {
     @Test
     fun `deletes existing user`() {
         val userId = UUID.randomUUID()
-        val user = UserEntity(
+        val user = User(
             id = userId,
             email = "alice@example.com",
             encryptedDek = "encrypted",

@@ -1,9 +1,9 @@
 package com.ems.userservice.mapper
 
-import com.ems.userservice.domain.UserEntity
-import com.ems.userservice.dto.UserResponse
+import com.ems.userservice.domain.User
+import com.ems.userservice.dto.response.UserResponse
 
-fun UserEntity.toResponse() = UserResponse(
+fun User.toResponse() = UserResponse(
     id = id,
     email = email,
     createdAt = createdAt,

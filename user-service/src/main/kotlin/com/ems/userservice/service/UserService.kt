@@ -1,9 +1,9 @@
 package com.ems.userservice.service
 
 import com.ems.userservice.crypto.CryptoService
-import com.ems.userservice.domain.UserEntity
-import com.ems.userservice.dto.DecryptedKeyResponse
-import com.ems.userservice.dto.UserResponse
+import com.ems.userservice.domain.User
+import com.ems.userservice.dto.response.DecryptedKeyResponse
+import com.ems.userservice.dto.response.UserResponse
 import com.ems.userservice.exception.EmailAlreadyExistsException
 import com.ems.userservice.exception.UserNotFoundException
 import com.ems.userservice.mapper.toResponse
@@ -26,7 +26,7 @@ class UserService(
 
         val dek = cryptoService.generateDek()
         val encryptedDek = cryptoService.encryptDek(dek)
-        val user = UserEntity(
+        val user = User(
             email = normalizedEmail,
             encryptedDek = encryptedDek.ciphertextBase64,
             iv = encryptedDek.ivBase64,
@@ -50,6 +50,6 @@ class UserService(
         userRepository.delete(user)
     }
 
-    private fun findUser(id: UUID): UserEntity =
+    private fun findUser(id: UUID): User =
         userRepository.findById(id).orElseThrow { UserNotFoundException(id) }
 }

@@ -1,4 +1,4 @@
-package com.ems.userservice.dto
+package com.ems.userservice.dto.response
 
 import java.time.LocalDateTime
 import java.util.UUID
