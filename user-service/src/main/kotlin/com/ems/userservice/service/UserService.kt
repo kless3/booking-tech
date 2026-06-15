@@ -20,7 +20,6 @@ class UserService(
     @Transactional
     fun createUser(email: String): UserResponse {
         val normalizedEmail = email.trim().lowercase()
-        
         if (userRepository.existsByEmail(normalizedEmail)) {
             throw EmailAlreadyExistsException(normalizedEmail)
         }
