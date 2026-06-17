@@ -1,5 +1,6 @@
 package com.ems.eventservice.dto.response
 
+import java.io.Serializable
 import java.util.UUID
 
 data class EventAvailabilityResponse(
@@ -8,4 +9,4 @@ data class EventAvailabilityResponse(
     val ticketsSold: Int,
     val activeTickets: Long,
     val remainingCapacity: Long,
-)
+) : Serializable

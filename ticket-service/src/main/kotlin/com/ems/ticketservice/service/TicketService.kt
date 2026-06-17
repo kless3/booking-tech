@@ -1,6 +1,7 @@
 package com.ems.ticketservice.service
 
 import com.ems.ticketservice.client.UserKeyClient
+import com.ems.ticketservice.config.CacheNames
 import com.ems.ticketservice.crypto.TicketCryptoService
 import com.ems.ticketservice.domain.Ticket
 import com.ems.ticketservice.domain.TicketStatus
@@ -15,6 +16,8 @@ import com.ems.ticketservice.repository.OutboxEventRepository
 import com.ems.ticketservice.repository.TicketRepository
 import java.time.LocalDateTime
 import java.util.UUID
+import org.springframework.cache.CacheManager
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.ObjectMapper
@@ -27,6 +30,7 @@ class TicketService(
     private val ticketCryptoService: TicketCryptoService,
     private val outboxEventFactory: OutboxEventFactory,
     private val objectMapper: ObjectMapper,
+    private val cacheManager: CacheManager,
 ) {
     @Transactional
     fun createTicket(request: CreateTicketRequest): TicketResponse {
@@ -48,6 +52,7 @@ class TicketService(
         )
 
         outboxEventRepository.save(outboxEventFactory.ticketCreated(ticket.id, userId, eventId))
+        evictTicketSummary(eventId)
         return ticket.toResponse(payload)
     }
 
@@ -65,6 +70,7 @@ class TicketService(
             throw TicketErasedException(id)
         }
         ticket.cancel()
+        evictTicketSummary(ticket.eventId)
         return ticket.toResponse(decryptPayload(ticket))
     }
 
@@ -79,10 +85,12 @@ class TicketService(
         tickets.forEach { ticket -> ticket.eraseForGdpr(erasedAt) }
         val erasedTicketIds = tickets.map { ticket -> ticket.id }
         outboxEventRepository.save(outboxEventFactory.ticketGdprErased(userId, erasedTicketIds))
+        tickets.map { ticket -> ticket.eventId }.distinct().forEach(::evictTicketSummary)
         return erasedTicketIds
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = [CacheNames.TICKET_SUMMARIES], key = "#eventId")
     fun getTicketSummary(eventId: UUID): TicketSummaryResponse =
         TicketSummaryResponse(
             eventId = eventId,
@@ -93,6 +101,7 @@ class TicketService(
     fun cancelActiveTicketsForEvent(eventId: UUID): List<UUID> {
         val tickets = ticketRepository.findAllByEventIdAndStatus(eventId, TicketStatus.ACTIVE)
         tickets.forEach(Ticket::cancel)
+        evictTicketSummary(eventId)
         return tickets.map { it.id }
     }
 
@@ -109,5 +118,9 @@ class TicketService(
         val userDek = userKeyClient.getUserDek(userId)
         val decryptedPayload = ticketCryptoService.decrypt(encryptedPayload, payloadIv, userDek.dekBase64)
         return objectMapper.readValue(decryptedPayload, TicketPayload::class.java)
+    }
+
+    private fun evictTicketSummary(eventId: UUID) {
+        cacheManager.getCache(CacheNames.TICKET_SUMMARIES)?.evict(eventId)
     }
 }

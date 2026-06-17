@@ -46,6 +46,20 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7.4-alpine
+    container_name: ems-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   user-service:
     build:
       context: ./user-service
@@ -55,11 +69,15 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_service
       SPRING_DATASOURCE_USERNAME: user_service
       SPRING_DATASOURCE_PASSWORD: user_service
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       APP_SECURITY_KEK_BASE64: ${APP_SECURITY_KEK_BASE64:?APP_SECURITY_KEK_BASE64 must be set to a 256-bit Base64 AES key}
     ports:
@@ -91,6 +109,8 @@ services:
         condition: service_healthy
       ticket-postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
       user-service:
         condition: service_started
     environment:
@@ -98,6 +118,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://ticket-postgres:5432/ticket_service
       SPRING_DATASOURCE_USERNAME: ticket_service
       SPRING_DATASOURCE_PASSWORD: ticket_service
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       APP_CLIENTS_USER_SERVICE_BASE_URL: http://user-service:8080
     ports:
@@ -129,6 +151,8 @@ services:
         condition: service_healthy
       event-postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
       user-service:
         condition: service_started
       ticket-service:
@@ -138,6 +162,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://event-postgres:5432/event_service
       SPRING_DATASOURCE_USERNAME: event_service
       SPRING_DATASOURCE_PASSWORD: event_service
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       APP_CLIENTS_USER_SERVICE_BASE_URL: http://user-service:8080
       APP_CLIENTS_TICKET_SERVICE_BASE_URL: http://ticket-service:8081
@@ -149,3 +175,4 @@ volumes:
   user-service-postgres-data:
   ticket-service-postgres-data:
   event-service-postgres-data:
+  redis-data:

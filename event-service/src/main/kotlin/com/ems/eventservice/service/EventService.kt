@@ -2,6 +2,7 @@ package com.ems.eventservice.service
 
 import com.ems.eventservice.client.TicketSummaryClient
 import com.ems.eventservice.client.UserKeyClient
+import com.ems.eventservice.config.CacheNames
 import com.ems.eventservice.crypto.EventCryptoService
 import com.ems.eventservice.domain.Event
 import com.ems.eventservice.domain.EventStatus
@@ -17,6 +18,8 @@ import com.ems.eventservice.repository.EventRepository
 import com.ems.eventservice.repository.OutboxEventRepository
 import java.time.LocalDateTime
 import java.util.UUID
+import org.springframework.cache.CacheManager
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,6 +31,7 @@ class EventService(
     private val ticketSummaryClient: TicketSummaryClient,
     private val eventCryptoService: EventCryptoService,
     private val outboxEventFactory: OutboxEventFactory,
+    private val cacheManager: CacheManager,
 ) {
     @Transactional
     fun createEvent(request: CreateEventRequest): EventResponse {
@@ -97,6 +101,7 @@ class EventService(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = [CacheNames.EVENT_AVAILABILITY], key = "#id")
     fun getAvailability(id: UUID): EventAvailabilityResponse {
         val event = findEvent(id)
         val summary = ticketSummaryClient.getTicketSummary(id)
@@ -117,6 +122,7 @@ class EventService(
         }
         event.cancel(LocalDateTime.now())
         outboxEventRepository.save(outboxEventFactory.eventCancelled(event.id, reason))
+        evictEventAvailability(event.id)
         return event.toResponse(decryptOrganizerNote(event))
     }
 
@@ -130,6 +136,7 @@ class EventService(
             throw EventUnavailableException(event.id)
         }
         event.incrementTicketsSold()
+        evictEventAvailability(event.id)
     }
 
     @Transactional
@@ -146,6 +153,7 @@ class EventService(
         events.forEach { event ->
             event.eraseOrganizer(erasedAt)
             outboxEventRepository.save(outboxEventFactory.eventCancelled(event.id, "organizer erased for GDPR"))
+            evictEventAvailability(event.id)
         }
         return events.map { it.id }
     }
@@ -159,5 +167,9 @@ class EventService(
         val organizerUserId = event.organizerUserId ?: return null
         val userDek = userKeyClient.getUserDek(organizerUserId)
         return eventCryptoService.decrypt(encryptedNote, noteIv, userDek.dekBase64)
+    }
+
+    private fun evictEventAvailability(eventId: UUID) {
+        cacheManager.getCache(CacheNames.EVENT_AVAILABILITY)?.evict(eventId)
     }
 }

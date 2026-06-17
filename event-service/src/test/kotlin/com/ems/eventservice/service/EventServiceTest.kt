@@ -26,6 +26,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
+import org.springframework.cache.CacheManager
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 class EventServiceTest {
@@ -33,6 +34,7 @@ class EventServiceTest {
     private val outboxEventRepository = Mockito.mock(OutboxEventRepository::class.java)
     private val userKeyClient = Mockito.mock(UserKeyClient::class.java)
     private val ticketSummaryClient = Mockito.mock(TicketSummaryClient::class.java)
+    private val cacheManager = Mockito.mock(CacheManager::class.java)
     private val cryptoService = EventCryptoService()
     private val objectMapper = jacksonMapperBuilder().build()
     private val outboxEventFactory = OutboxEventFactory(
@@ -52,6 +54,7 @@ class EventServiceTest {
         ticketSummaryClient = ticketSummaryClient,
         eventCryptoService = cryptoService,
         outboxEventFactory = outboxEventFactory,
+        cacheManager = cacheManager,
     )
     private val dekBase64 = Base64.getEncoder().encodeToString(ByteArray(32) { 8 })
 

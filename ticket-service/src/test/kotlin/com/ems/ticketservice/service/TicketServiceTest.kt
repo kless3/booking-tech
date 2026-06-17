@@ -22,6 +22,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
+import org.springframework.cache.CacheManager
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.module.kotlin.jacksonMapperBuilder
 
@@ -29,6 +30,7 @@ class TicketServiceTest {
     private val ticketRepository = Mockito.mock(TicketRepository::class.java)
     private val outboxEventRepository = Mockito.mock(OutboxEventRepository::class.java)
     private val userKeyClient = Mockito.mock(UserKeyClient::class.java)
+    private val cacheManager = Mockito.mock(CacheManager::class.java)
     private val objectMapper: ObjectMapper = jacksonMapperBuilder().build()
     private val outboxEventFactory = OutboxEventFactory(
         objectMapper = objectMapper,
@@ -48,6 +50,7 @@ class TicketServiceTest {
         ticketCryptoService = cryptoService,
         outboxEventFactory = outboxEventFactory,
         objectMapper = objectMapper,
+        cacheManager = cacheManager,
     )
 
     private val dekBase64 = Base64.getEncoder().encodeToString(ByteArray(32) { 9 })
