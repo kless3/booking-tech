@@ -19,10 +19,10 @@ class User(
     @Column(nullable = false, unique = true, length = 320)
     val email: String,
 
-    @Column(name = "encrypted_dek", nullable = false, columnDefinition = "VARCHAR")
+    @Column(name = "encrypted_dek", nullable = false, length = 512)
     val encryptedDek: String,
 
-    @Column(nullable = false, columnDefinition = "VARCHAR")
+    @Column(nullable = false, length = 64)
     val iv: String,
 
     @CreationTimestamp

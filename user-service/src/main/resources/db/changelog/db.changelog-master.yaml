@@ -19,12 +19,12 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: encrypted_dek
-                  type: varchar
+                  type: varchar(512)
                   constraints:
                     nullable: false
               - column:
                   name: iv
-                  type: varchar
+                  type: varchar(64)
                   constraints:
                     nullable: false
               - column:
