@@ -119,6 +119,7 @@ class UserServiceIntegrationTest {
             registry.add("spring.datasource.username", postgres::getUsername)
             registry.add("spring.datasource.password", postgres::getPassword)
             registry.add("spring.jpa.database-platform") { "org.hibernate.dialect.PostgreSQLDialect" }
+            registry.add("spring.jpa.hibernate.ddl-auto") { "none" }
             registry.add("spring.liquibase.enabled") { true }
             registry.add("spring.liquibase.change-log") { "classpath:db/changelog/db.changelog-master.yaml" }
             registry.add("app.security.kek-base64") {
