@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 
-interface TicketSummaryClient {
+fun interface TicketSummaryClient {
     fun getTicketSummary(eventId: UUID): TicketSummaryResponse
 }
 

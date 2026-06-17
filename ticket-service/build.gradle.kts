@@ -6,6 +6,8 @@ plugins {
     kotlin("plugin.jpa") version "2.3.21"
 }
 
+val testcontainersVersion: String by project
+
 group = "com.ems"
 version = "0.0.1-SNAPSHOT"
 description = "Ticket Service for Event Management System"
@@ -22,11 +24,11 @@ repositories {
 
 dependencyManagement {
     dependencies {
-        dependency("org.testcontainers:testcontainers:1.21.4")
-        dependency("org.testcontainers:jdbc:1.21.4")
-        dependency("org.testcontainers:database-commons:1.21.4")
-        dependency("org.testcontainers:junit-jupiter:1.21.4")
-        dependency("org.testcontainers:postgresql:1.21.4")
+        dependency("org.testcontainers:testcontainers:$testcontainersVersion")
+        dependency("org.testcontainers:jdbc:$testcontainersVersion")
+        dependency("org.testcontainers:database-commons:$testcontainersVersion")
+        dependency("org.testcontainers:junit-jupiter:$testcontainersVersion")
+        dependency("org.testcontainers:postgresql:$testcontainersVersion")
     }
 }
 
@@ -50,8 +52,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.kafka:spring-kafka-test")
-    testImplementation("org.testcontainers:junit-jupiter:1.21.4")
-    testImplementation("org.testcontainers:postgresql:1.21.4")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

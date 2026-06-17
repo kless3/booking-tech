@@ -69,8 +69,8 @@ class UserServiceIntegrationTest {
         val savedUser = userRepository.findById(user.id).orElseThrow()
         val decryptedKey = userService.getUserDecryptedKey(user.id)
 
-        assertEquals("alice@example.com", user.email)
-        assertEquals("alice@example.com", savedUser.email)
+        assertEquals(ALICE_EMAIL, user.email)
+        assertEquals(ALICE_EMAIL, savedUser.email)
         assertNotNull(savedUser.createdAt)
         assertNotNull(savedUser.updatedAt)
         assertTrue(savedUser.encryptedDek.isNotBlank())
@@ -86,12 +86,12 @@ class UserServiceIntegrationTest {
     @Test
     fun `enforces unique email in database schema`() {
         val firstUser = User(
-            email = "alice@example.com",
+            email = ALICE_EMAIL,
             encryptedDek = "encrypted-1",
             iv = "iv-1",
         )
         val duplicateUser = User(
-            email = "alice@example.com",
+            email = ALICE_EMAIL,
             encryptedDek = "encrypted-2",
             iv = "iv-2",
         )
@@ -104,6 +104,8 @@ class UserServiceIntegrationTest {
     }
 
     companion object {
+        private const val ALICE_EMAIL = "alice@example.com"
+
         @Container
         @JvmStatic
         val postgres: PostgreSQLContainer<Nothing> = PostgreSQLContainer<Nothing>("postgres:16-alpine").apply {

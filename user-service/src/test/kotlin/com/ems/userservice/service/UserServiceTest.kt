@@ -29,7 +29,7 @@ class UserServiceTest {
 
     @Test
     fun `creates user with normalized email and encrypted dek`() {
-        Mockito.`when`(userRepository.existsByEmail("alice@example.com")).thenReturn(false)
+        Mockito.`when`(userRepository.existsByEmail(ALICE_EMAIL)).thenReturn(false)
         Mockito.`when`(userRepository.save(Mockito.any(User::class.java))).thenAnswer { invocation ->
             invocation.getArgument<User>(0)
         }
@@ -41,8 +41,8 @@ class UserServiceTest {
         val savedUser = userCaptor.value
 
         assertEquals(savedUser.id, response.id)
-        assertEquals("alice@example.com", response.email)
-        assertEquals("alice@example.com", savedUser.email)
+        assertEquals(ALICE_EMAIL, response.email)
+        assertEquals(ALICE_EMAIL, savedUser.email)
         assertTrue(savedUser.encryptedDek.isNotBlank())
         assertTrue(savedUser.iv.isNotBlank())
         assertEquals(12, Base64.getDecoder().decode(savedUser.iv).size)
@@ -51,10 +51,10 @@ class UserServiceTest {
 
     @Test
     fun `throws when email already exists`() {
-        Mockito.`when`(userRepository.existsByEmail("alice@example.com")).thenReturn(true)
+        Mockito.`when`(userRepository.existsByEmail(ALICE_EMAIL)).thenReturn(true)
 
         assertFailsWith<EmailAlreadyExistsException> {
-            userService.createUser("alice@example.com")
+            userService.createUser(ALICE_EMAIL)
         }
 
         Mockito.verify(userRepository, Mockito.never()).save(Mockito.any(User::class.java))
@@ -67,7 +67,7 @@ class UserServiceTest {
         val userId = UUID.randomUUID()
         val user = User(
             id = userId,
-            email = "alice@example.com",
+            email = ALICE_EMAIL,
             encryptedDek = encryptedDek.ciphertextBase64,
             iv = encryptedDek.ivBase64,
         )
@@ -84,7 +84,7 @@ class UserServiceTest {
         val userId = UUID.randomUUID()
         val user = User(
             id = userId,
-            email = "alice@example.com",
+            email = ALICE_EMAIL,
             encryptedDek = "encrypted",
             iv = "iv",
         )
@@ -113,5 +113,9 @@ class UserServiceTest {
         assertFailsWith<UserNotFoundException> {
             userService.getUserDecryptedKey(userId)
         }
+    }
+
+    companion object {
+        private const val ALICE_EMAIL = "alice@example.com"
     }
 }

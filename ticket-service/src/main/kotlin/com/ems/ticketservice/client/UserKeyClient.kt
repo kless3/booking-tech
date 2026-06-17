@@ -10,7 +10,7 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestClientResponseException
 
-interface UserKeyClient {
+fun interface UserKeyClient {
     fun getUserDek(userId: UUID): UserKeyResponse
 }
 

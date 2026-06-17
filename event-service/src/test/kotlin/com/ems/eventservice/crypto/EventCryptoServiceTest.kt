@@ -12,12 +12,12 @@ class EventCryptoServiceTest {
 
     @Test
     fun `encrypts and decrypts organizer note`() {
-        val encrypted = cryptoService.encrypt("private organizer note", dekBase64)
+        val encrypted = cryptoService.encrypt(ORGANIZER_NOTE, dekBase64)
 
         val decrypted = cryptoService.decrypt(encrypted.ciphertextBase64, encrypted.ivBase64, dekBase64)
 
-        assertEquals("private organizer note", decrypted)
-        assertNotEquals("private organizer note", encrypted.ciphertextBase64)
+        assertEquals(ORGANIZER_NOTE, decrypted)
+        assertNotEquals(ORGANIZER_NOTE, encrypted.ciphertextBase64)
         assertEquals(12, Base64.getDecoder().decode(encrypted.ivBase64).size)
     }
 
@@ -28,5 +28,9 @@ class EventCryptoServiceTest {
         assertFailsWith<IllegalArgumentException> {
             cryptoService.encrypt("note", invalidDekBase64)
         }
+    }
+
+    companion object {
+        private const val ORGANIZER_NOTE = "private organizer note"
     }
 }

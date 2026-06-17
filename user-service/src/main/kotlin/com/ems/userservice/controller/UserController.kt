@@ -34,7 +34,7 @@ class UserController(
         userService.getUserDecryptedKey(id)
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun deleteUser(@PathVariable id: UUID): ResponseEntity<Unit> {
         userService.deleteUser(id)
         return ResponseEntity.noContent().build()
     }
