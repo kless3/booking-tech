@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: importer-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5437/importer_service}
+    username: ${SPRING_DATASOURCE_USERNAME:importer_service}
+    password: ${SPRING_DATASOURCE_PASSWORD:importer_service}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+server:
+  port: ${SERVER_PORT:8086}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  clients:
+    event-service:
+      base-url: ${APP_CLIENTS_EVENT_SERVICE_BASE_URL:http://localhost:8082}

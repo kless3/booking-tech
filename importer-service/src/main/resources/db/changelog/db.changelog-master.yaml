@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-importer-service-tables
+      author: ems
+      changes:
+        - createTable:
+            tableName: imported_events
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: source
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: external_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_id
+                  type: uuid
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: failure_reason
+                  type: varchar(1024)
+              - column:
+                  name: imported_at
+                  type: timestamp
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: imported_events
+            columnNames: source, external_id
+            constraintName: uk_imported_events_source_external_id
+        - createIndex:
+            tableName: imported_events
+            indexName: idx_imported_events_status_created_at
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: created_at

@@ -32,5 +32,9 @@ class GatewayRoutesConfig(
                 route.path("/api/v1/notifications/**")
                     .uri(routesProperties.notificationServiceBaseUrl)
             }
+            .route("importer-service") { route ->
+                route.path("/api/v1/imports/**")
+                    .uri(routesProperties.importerServiceBaseUrl)
+            }
             .build()
 }

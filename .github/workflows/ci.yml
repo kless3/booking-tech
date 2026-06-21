@@ -34,6 +34,7 @@ jobs:
           - event-service
           - payment-service
           - notification-service
+          - importer-service
           - api-gateway
     steps:
       - name: Checkout
@@ -101,6 +102,7 @@ jobs:
           ./event-service/gradlew -p event-service compileTestKotlin --no-daemon
           ./payment-service/gradlew -p payment-service compileTestKotlin --no-daemon
           ./notification-service/gradlew -p notification-service compileTestKotlin --no-daemon
+          ./importer-service/gradlew -p importer-service compileTestJava --no-daemon
           ./api-gateway/gradlew -p api-gateway compileTestKotlin --no-daemon
 
       - name: Sonar analysis
@@ -114,10 +116,10 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
-            -Dsonar.sources=user-service/src/main/kotlin,ticket-service/src/main/kotlin,event-service/src/main/kotlin,payment-service/src/main/kotlin,notification-service/src/main/kotlin,api-gateway/src/main/kotlin
-            -Dsonar.tests=user-service/src/test/kotlin,ticket-service/src/test/kotlin,event-service/src/test/kotlin,payment-service/src/test/kotlin,notification-service/src/test/kotlin,api-gateway/src/test/kotlin
-            -Dsonar.java.binaries=user-service/build/classes/kotlin/main,ticket-service/build/classes/kotlin/main,event-service/build/classes/kotlin/main,payment-service/build/classes/kotlin/main,notification-service/build/classes/kotlin/main,api-gateway/build/classes/kotlin/main
-            -Dsonar.java.test.binaries=user-service/build/classes/kotlin/test,ticket-service/build/classes/kotlin/test,event-service/build/classes/kotlin/test,payment-service/build/classes/kotlin/test,notification-service/build/classes/kotlin/test,api-gateway/build/classes/kotlin/test
+            -Dsonar.sources=user-service/src/main/kotlin,ticket-service/src/main/kotlin,event-service/src/main/kotlin,payment-service/src/main/kotlin,notification-service/src/main/kotlin,importer-service/src/main/java,api-gateway/src/main/kotlin
+            -Dsonar.tests=user-service/src/test/kotlin,ticket-service/src/test/kotlin,event-service/src/test/kotlin,payment-service/src/test/kotlin,notification-service/src/test/kotlin,importer-service/src/test/java,api-gateway/src/test/kotlin
+            -Dsonar.java.binaries=user-service/build/classes/kotlin/main,ticket-service/build/classes/kotlin/main,event-service/build/classes/kotlin/main,payment-service/build/classes/kotlin/main,notification-service/build/classes/kotlin/main,importer-service/build/classes/java/main,api-gateway/build/classes/kotlin/main
+            -Dsonar.java.test.binaries=user-service/build/classes/kotlin/test,ticket-service/build/classes/kotlin/test,event-service/build/classes/kotlin/test,payment-service/build/classes/kotlin/test,notification-service/build/classes/kotlin/test,importer-service/build/classes/java/test,api-gateway/build/classes/kotlin/test
 
       - name: Dockerfile lint user-service
         uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5 # v3.3.0
@@ -149,6 +151,12 @@ jobs:
           dockerfile: notification-service/Dockerfile
           failure-threshold: warning
 
+      - name: Dockerfile lint importer-service
+        uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5 # v3.3.0
+        with:
+          dockerfile: importer-service/Dockerfile
+          failure-threshold: warning
+
       - name: Dockerfile lint api-gateway
         uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5 # v3.3.0
         with:
@@ -174,6 +182,7 @@ jobs:
           - event-service
           - payment-service
           - notification-service
+          - importer-service
           - api-gateway
     steps:
       - name: Checkout
@@ -198,7 +207,12 @@ jobs:
 
       - name: Build ${{ matrix.service }} for CodeQL
         working-directory: ${{ matrix.service }}
-        run: ./gradlew compileKotlin --no-daemon --stacktrace
+        run: |
+          if [ "${{ matrix.service }}" = "importer-service" ]; then
+            ./gradlew compileJava --no-daemon --stacktrace
+          else
+            ./gradlew compileKotlin --no-daemon --stacktrace
+          fi
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@dd903d2e4f5405488e5ef1422510ee31c8b32357 # v3
@@ -224,6 +238,7 @@ jobs:
           - event-service
           - payment-service
           - notification-service
+          - importer-service
           - api-gateway
     steps:
       - name: Checkout
