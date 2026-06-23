@@ -189,6 +189,8 @@ services:
         condition: service_healthy
     environment:
       SERVER_PORT: 8080
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_service
       SPRING_DATASOURCE_USERNAME: user_service
       SPRING_DATASOURCE_PASSWORD: user_service
@@ -231,6 +233,8 @@ services:
         condition: service_started
     environment:
       SERVER_PORT: 8081
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
       SPRING_DATASOURCE_URL: jdbc:postgresql://ticket-postgres:5432/ticket_service
       SPRING_DATASOURCE_USERNAME: ticket_service
       SPRING_DATASOURCE_PASSWORD: ticket_service
@@ -276,6 +280,8 @@ services:
         condition: service_started
     environment:
       SERVER_PORT: 8082
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
       SPRING_DATASOURCE_URL: jdbc:postgresql://event-postgres:5432/event_service
       SPRING_DATASOURCE_USERNAME: event_service
       SPRING_DATASOURCE_PASSWORD: event_service
@@ -317,6 +323,8 @@ services:
         condition: service_healthy
     environment:
       SERVER_PORT: 8084
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
       SPRING_DATASOURCE_URL: jdbc:postgresql://payment-postgres:5432/payment_service
       SPRING_DATASOURCE_USERNAME: payment_service
       SPRING_DATASOURCE_PASSWORD: payment_service
@@ -358,6 +366,8 @@ services:
         condition: service_healthy
     environment:
       SERVER_PORT: 8085
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
       SPRING_DATASOURCE_URL: jdbc:postgresql://notification-postgres:5432/notification_service
       SPRING_DATASOURCE_USERNAME: notification_service
       SPRING_DATASOURCE_PASSWORD: notification_service
@@ -394,6 +404,8 @@ services:
         condition: service_started
     environment:
       SERVER_PORT: 8086
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
       SPRING_DATASOURCE_URL: jdbc:postgresql://importer-postgres:5432/importer_service
       SPRING_DATASOURCE_USERNAME: importer_service
       SPRING_DATASOURCE_PASSWORD: importer_service
@@ -423,6 +435,8 @@ services:
         condition: service_healthy
     environment:
       SERVER_PORT: 8083
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/ems
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/ems/protocol/openid-connect/certs
       APP_ROUTES_USER_SERVICE_BASE_URL: http://user-service:8080
