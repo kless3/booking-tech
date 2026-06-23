@@ -63,6 +63,16 @@ Prometheus scrapes these actuator endpoints:
 
 The `EMS Overview` dashboard is provisioned automatically in Grafana.
 
+## Alerts
+
+Prometheus loads alert rules from:
+
+```text
+observability/prometheus/alerts.yml
+```
+
+The baseline rules cover service availability, HTTP 5xx rate, JVM heap pressure, and Hikari connection pool saturation. Grafana also shows the current number of firing alerts on the `EMS Overview` dashboard.
+
 ## Logs
 
 Promtail reads Docker container logs from the local Docker host and ships them to Loki with the `job="ems-containers"` label.
