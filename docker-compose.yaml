@@ -162,6 +162,20 @@ services:
       - ./observability/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
       - tempo-data:/var/tempo
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.111.0
+    container_name: ems-otel-collector
+    command:
+      - --config=/etc/otel-collector.yml
+    depends_on:
+      tempo:
+        condition: service_started
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./observability/otel-collector/otel-collector.yml:/etc/otel-collector.yml:ro
+
   user-service:
     build:
       context: ./user-service
