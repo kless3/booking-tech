@@ -5,6 +5,7 @@ plugins {
 }
 
 val testcontainersVersion: String by project
+val springdocOpenApiVersion: String by project
 
 group = "com.ems"
 version = "0.0.1-SNAPSHOT"
@@ -39,6 +40,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocOpenApiVersion")
     implementation("io.micrometer:micrometer-tracing-bridge-otel")
     implementation("org.liquibase:liquibase-core")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
