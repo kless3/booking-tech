@@ -33,6 +33,22 @@ Start only the observability components:
 docker compose up prometheus grafana loki promtail tempo otel-collector
 ```
 
+## Smoke Check
+
+After the full stack starts, run:
+
+```bash
+./scripts/observability-smoke.sh
+```
+
+The script checks Prometheus, Grafana, Loki, Tempo, OpenTelemetry Collector, and all service scrape targets.
+
+To check only the observability infrastructure without application targets:
+
+```bash
+CHECK_SERVICE_TARGETS=false ./scripts/observability-smoke.sh
+```
+
 ## Metrics
 
 Prometheus scrapes these actuator endpoints:
