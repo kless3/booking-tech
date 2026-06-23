@@ -6,6 +6,7 @@ import com.ems.userservice.service.UserService
 import java.net.ServerSocket
 import java.time.Duration
 import java.util.Base64
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -110,7 +111,7 @@ class UserServiceIntegrationTest {
         private const val ALICE_EMAIL = "alice@example.com"
         private const val POSTGRES_DATABASE = "user_service"
         private const val POSTGRES_USERNAME = "user_service"
-        private const val POSTGRES_PASSWORD = "user_service"
+        private val postgresSecret = UUID.randomUUID().toString()
         private val postgresPort = ServerSocket(0).use { it.localPort }
 
         @Container
@@ -118,7 +119,7 @@ class UserServiceIntegrationTest {
         val postgres: GenericContainer<Nothing> = GenericContainer<Nothing>("postgres:17-alpine").apply {
             withEnv("POSTGRES_DB", POSTGRES_DATABASE)
             withEnv("POSTGRES_USER", POSTGRES_USERNAME)
-            withEnv("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
+            withEnv("POSTGRES_PASSWORD", postgresSecret)
             withCommand("postgres", "-c", "port=$postgresPort", "-c", "fsync=off")
             waitingFor(
                 Wait.forLogMessage(".*database system is ready to accept connections.*\\s", 2)
@@ -134,7 +135,7 @@ class UserServiceIntegrationTest {
         fun registerProperties(registry: DynamicPropertyRegistry) {
             registry.add("spring.datasource.url") { postgres.hostNetworkJdbcUrl().withStableConnectionSettings() }
             registry.add("spring.datasource.username") { POSTGRES_USERNAME }
-            registry.add("spring.datasource.password") { POSTGRES_PASSWORD }
+            registry.add("spring.datasource.password") { postgresSecret }
             registry.add("spring.datasource.hikari.connection-timeout") { "10000" }
             registry.add("spring.jpa.database-platform") { "org.hibernate.dialect.PostgreSQLDialect" }
             registry.add("spring.jpa.hibernate.ddl-auto") { "none" }
