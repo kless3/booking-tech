@@ -151,6 +151,17 @@ services:
       - ./observability/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
 
+  tempo:
+    image: grafana/tempo:2.6.1
+    container_name: ems-tempo
+    command:
+      - -config.file=/etc/tempo/tempo.yml
+    ports:
+      - "3200:3200"
+    volumes:
+      - ./observability/tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo-data:/var/tempo
+
   user-service:
     build:
       context: ./user-service
@@ -423,3 +434,4 @@ volumes:
   prometheus-data:
   grafana-data:
   loki-data:
+  tempo-data:
