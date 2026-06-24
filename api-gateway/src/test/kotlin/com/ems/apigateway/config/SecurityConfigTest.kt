@@ -15,12 +15,12 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = [
-        "app.routes.user-service-base-url=http://users",
-        "app.routes.ticket-service-base-url=http://tickets",
-        "app.routes.event-service-base-url=http://events",
-        "app.routes.payment-service-base-url=http://payments",
-        "app.routes.notification-service-base-url=http://notifications",
-        "app.routes.importer-service-base-url=http://imports",
+        "app.routes.user-service-base-url=http://127.0.0.1:9",
+        "app.routes.ticket-service-base-url=http://127.0.0.1:9",
+        "app.routes.event-service-base-url=http://127.0.0.1:9",
+        "app.routes.payment-service-base-url=http://127.0.0.1:9",
+        "app.routes.notification-service-base-url=http://127.0.0.1:9",
+        "app.routes.importer-service-base-url=http://127.0.0.1:9",
     ],
 )
 class SecurityConfigTest {
