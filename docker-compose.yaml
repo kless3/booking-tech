@@ -339,19 +339,15 @@ services:
     ports:
       - "8084:8084"
 
-  notification-postgres:
-    image: postgres:17-alpine
-    container_name: ems-notification-service-postgres
-    environment:
-      POSTGRES_DB: notification_service
-      POSTGRES_USER: notification_service
-      POSTGRES_PASSWORD: notification_service
+  notification-mongodb:
+    image: mongo:7.0
+    container_name: ems-notification-service-mongodb
     ports:
-      - "5436:5432"
+      - "27017:27017"
     volumes:
-      - notification-service-postgres-data:/var/lib/postgresql/data
+      - notification-service-mongodb-data:/data/db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U notification_service -d notification_service"]
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' | grep 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -363,33 +359,27 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-      notification-postgres:
+      notification-mongodb:
         condition: service_healthy
     environment:
       SERVER_PORT: 8085
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
       MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
-      SPRING_DATASOURCE_URL: jdbc:postgresql://notification-postgres:5432/notification_service
-      SPRING_DATASOURCE_USERNAME: notification_service
-      SPRING_DATASOURCE_PASSWORD: notification_service
+      SPRING_DATA_MONGODB_URI: mongodb://notification-mongodb:27017/notification_service
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       APP_DELIVERY_MAX_ATTEMPTS: 3
     ports:
       - "8085:8085"
 
-  importer-postgres:
-    image: postgres:17-alpine
-    container_name: ems-importer-service-postgres
-    environment:
-      POSTGRES_DB: importer_service
-      POSTGRES_USER: importer_service
-      POSTGRES_PASSWORD: importer_service
+  importer-mongodb:
+    image: mongo:7.0
+    container_name: ems-importer-service-mongodb
     ports:
-      - "5437:5432"
+      - "27018:27017"
     volumes:
-      - importer-service-postgres-data:/var/lib/postgresql/data
+      - importer-service-mongodb-data:/data/db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U importer_service -d importer_service"]
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' | grep 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -399,7 +389,7 @@ services:
       context: ./importer-service
     container_name: ems-importer-service
     depends_on:
-      importer-postgres:
+      importer-mongodb:
         condition: service_healthy
       event-service:
         condition: service_started
@@ -407,9 +397,7 @@ services:
       SERVER_PORT: 8086
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
       MANAGEMENT_OTLP_TRACING_ENDPOINT: http://otel-collector:4318/v1/traces
-      SPRING_DATASOURCE_URL: jdbc:postgresql://importer-postgres:5432/importer_service
-      SPRING_DATASOURCE_USERNAME: importer_service
-      SPRING_DATASOURCE_PASSWORD: importer_service
+      SPRING_DATA_MONGODB_URI: mongodb://importer-mongodb:27017/importer_service
       APP_CLIENTS_EVENT_SERVICE_BASE_URL: http://event-service:8082
       APP_IMPORT_SCHEDULE_ENABLED: "false"
     ports:
@@ -455,8 +443,8 @@ volumes:
   ticket-service-postgres-data:
   event-service-postgres-data:
   payment-service-postgres-data:
-  notification-service-postgres-data:
-  importer-service-postgres-data:
+  notification-service-mongodb-data:
+  importer-service-mongodb-data:
   redis-data:
   localstack-data:
   keycloak-data:

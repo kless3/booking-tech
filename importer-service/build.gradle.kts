@@ -27,7 +27,7 @@ dependencyManagement {
         dependency("org.testcontainers:jdbc:$testcontainersVersion")
         dependency("org.testcontainers:database-commons:$testcontainersVersion")
         dependency("org.testcontainers:junit-jupiter:$testcontainersVersion")
-        dependency("org.testcontainers:postgresql:$testcontainersVersion")
+        dependency("org.testcontainers:mongodb:$testcontainersVersion")
     }
 }
 
@@ -37,21 +37,19 @@ dependencyLocking {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocOpenApiVersion")
     implementation("io.micrometer:micrometer-tracing-bridge-otel")
-    implementation("org.liquibase:liquibase-core")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("io.opentelemetry:opentelemetry-exporter-otlp")
-    runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-mongodb-test")
     testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:mongodb")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

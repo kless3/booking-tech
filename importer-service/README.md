@@ -11,8 +11,7 @@ The service is implemented in Java and isolates provider-specific import logic b
 - Ticketmaster and Timepad import adapters.
 - Normalization layer for external event data.
 - Manual import API and optional scheduled import job.
-- Import history persisted in PostgreSQL.
-- Liquibase-managed schema.
+- Import history persisted as MongoDB documents.
 - RFC 7807 error responses with `ProblemDetail`.
 - OpenAPI documentation through Springdoc.
 
@@ -30,7 +29,7 @@ api          # OpenAPI controller contracts
 client       # external source clients and event-service client
 config       # application, import, source, and HTTP client configuration
 controller   # REST API
-domain       # JPA entities and enums
+domain       # MongoDB documents and enums
 dto          # request and response models
 exception    # domain exceptions and global error handling
 repository   # data access
@@ -42,7 +41,7 @@ service      # import orchestration, normalization, mapping, scheduled job
 From the Booking Platform project root:
 
 ```bash
-docker compose up --build importer-service importer-postgres event-service
+docker compose up --build importer-service importer-mongodb event-service
 ```
 
 ## Build

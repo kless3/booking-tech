@@ -1,52 +1,45 @@
 package com.ems.importerservice.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "imported_events")
+@Document("imported_events")
+@CompoundIndexes({
+    @CompoundIndex(name = "uk_imported_events_source_external_id", def = "{'source': 1, 'externalId': 1}", unique = true),
+    @CompoundIndex(name = "idx_imported_events_status_created_at", def = "{'status': 1, 'createdAt': -1}")
+})
 public class ImportedEvent {
     @Id
-    @Column(nullable = false, updatable = false)
     private UUID id = UUID.randomUUID();
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32, updatable = false)
+    @Indexed
     private EventSource source;
 
-    @Column(name = "external_id", nullable = false, updatable = false)
+    @Indexed
     private String externalId;
 
-    @Column(name = "event_id")
     private UUID eventId;
 
-    @Column(nullable = false)
     private String title;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32)
+    @Indexed
     private ImportStatus status;
 
-    @Column(name = "failure_reason", length = 1024)
     private String failureReason;
 
-    @Column(name = "imported_at")
     private LocalDateTime importedAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     protected ImportedEvent() {

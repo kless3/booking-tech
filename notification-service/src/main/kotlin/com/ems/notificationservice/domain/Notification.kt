@@ -1,61 +1,48 @@
 package com.ems.notificationservice.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.Id
-import jakarta.persistence.Table
 import java.time.LocalDateTime
 import java.util.UUID
-import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.UpdateTimestamp
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.mongodb.core.index.CompoundIndex
+import org.springframework.data.mongodb.core.index.Indexed
+import org.springframework.data.mongodb.core.mapping.Document
 
-@Entity
-@Table(name = "notifications")
+@Document("notifications")
+@CompoundIndex(name = "idx_notifications_recipient_created_at", def = "{'recipientUserId': 1, 'createdAt': -1}")
+@CompoundIndex(name = "idx_notifications_status_created_at", def = "{'status': 1, 'createdAt': -1}")
 class Notification(
     @Id
-    @Column(nullable = false, updatable = false)
     val id: UUID = UUID.randomUUID(),
 
-    @Column(name = "recipient_user_id", updatable = false)
+    @Indexed
     val recipientUserId: UUID?,
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32)
     val channel: NotificationChannel,
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32)
+    @Indexed
     var status: NotificationStatus = NotificationStatus.PENDING,
 
-    @Column(name = "source_event_id", nullable = false, updatable = false)
+    @Indexed
     val sourceEventId: UUID,
 
-    @Column(name = "source_event_type", nullable = false, updatable = false, length = 128)
     val sourceEventType: String,
 
-    @Column(nullable = false, length = 255)
     val subject: String,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
     val body: String,
 
-    @Column(name = "failure_reason", length = 1024)
     var failureReason: String? = null,
 
-    @Column(name = "delivery_attempts", nullable = false)
     var deliveryAttempts: Int = 0,
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
     var createdAt: LocalDateTime? = null,
 
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
 
-    @Column(name = "sent_at")
     var sentAt: LocalDateTime? = null,
 ) {
     fun markDeliveryAttempt(attempt: Int) {

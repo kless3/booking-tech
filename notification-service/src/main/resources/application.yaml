@@ -1,19 +1,10 @@
 spring:
   application:
     name: notification-service
-  datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5436/notification_service}
-    username: ${SPRING_DATASOURCE_USERNAME:notification_service}
-    password: ${SPRING_DATASOURCE_PASSWORD:notification_service}
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    open-in-view: false
-    properties:
-      hibernate:
-        format_sql: true
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/notification_service}
+      uuid-representation: standard
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:

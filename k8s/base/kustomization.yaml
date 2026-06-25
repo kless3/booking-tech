@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - infra/postgres.yaml
+  - infra/mongodb.yaml
   - infra/platform.yaml
   - apps/services.yaml
   - apps/ingress.yaml

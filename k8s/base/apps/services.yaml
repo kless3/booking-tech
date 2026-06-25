@@ -298,15 +298,8 @@ spec:
                   key: INTERNAL_HTTP_SCHEME
             - name: MANAGEMENT_OTLP_TRACING_ENDPOINT
               value: $(INTERNAL_HTTP_SCHEME)://otel-collector:4318/v1/traces
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://notification-postgres:5432/notification_service
-            - name: SPRING_DATASOURCE_USERNAME
-              value: notification_service
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ems-secrets
-                  key: NOTIFICATION_SERVICE_DB_PASSWORD
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://notification-mongodb:27017/notification_service
             - name: APP_DELIVERY_MAX_ATTEMPTS
               value: "3"
           readinessProbe:
@@ -360,15 +353,8 @@ spec:
                   key: INTERNAL_HTTP_SCHEME
             - name: MANAGEMENT_OTLP_TRACING_ENDPOINT
               value: $(INTERNAL_HTTP_SCHEME)://otel-collector:4318/v1/traces
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://importer-postgres:5432/importer_service
-            - name: SPRING_DATASOURCE_USERNAME
-              value: importer_service
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ems-secrets
-                  key: IMPORTER_SERVICE_DB_PASSWORD
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://importer-mongodb:27017/importer_service
             - name: APP_CLIENTS_EVENT_SERVICE_BASE_URL
               value: $(INTERNAL_HTTP_SCHEME)://event-service:8082
             - name: APP_IMPORT_SCHEDULE_ENABLED

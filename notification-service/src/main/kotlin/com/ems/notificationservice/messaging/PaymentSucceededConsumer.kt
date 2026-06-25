@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.ObjectMapper
 
 @Component
@@ -25,7 +24,6 @@ class PaymentSucceededConsumer(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @KafkaListener(topics = ["\${app.kafka.topics.payment-succeeded}"])
-    @Transactional
     fun handle(record: ConsumerRecord<String, String>) {
         val event = parseEventOrSendToDlt(record) ?: return
         if (event.eventType != PAYMENT_SUCCEEDED_EVENT_TYPE) {

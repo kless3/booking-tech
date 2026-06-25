@@ -2,6 +2,6 @@ package com.ems.notificationservice.repository
 
 import com.ems.notificationservice.domain.ProcessedKafkaMessage
 import java.util.UUID
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.mongodb.repository.MongoRepository
 
-interface ProcessedKafkaMessageRepository : JpaRepository<ProcessedKafkaMessage, UUID>
+interface ProcessedKafkaMessageRepository : MongoRepository<ProcessedKafkaMessage, UUID>

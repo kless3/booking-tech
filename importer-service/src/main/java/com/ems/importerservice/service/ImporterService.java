@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ImporterService {
@@ -42,7 +41,6 @@ public class ImporterService {
         this.importProperties = importProperties;
     }
 
-    @Transactional
     public ImportRunResponse importEvents(EventSource source, UUID organizerUserId, int limit) {
         ExternalEventClient client = externalEventClientRegistry.get(source);
         List<ImportedEventResponse> records = new ArrayList<>();
@@ -72,14 +70,12 @@ public class ImporterService {
         return new ImportRunResponse(source, imported, skipped, failed, records);
     }
 
-    @Transactional(readOnly = true)
     public List<ImportedEventResponse> getImportedEvents(EventSource source) {
         return importedEventRepository.findAllBySourceOrderByCreatedAtDesc(source).stream()
             .map(ImportedEventMapper::toResponse)
             .toList();
     }
 
-    @Transactional(readOnly = true)
     public ImportedEventResponse getImportedEvent(UUID id) {
         return importedEventRepository.findById(id)
             .map(ImportedEventMapper::toResponse)

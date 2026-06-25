@@ -11,7 +11,6 @@ import com.ems.notificationservice.repository.NotificationRepository
 import java.time.LocalDateTime
 import java.util.UUID
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class NotificationService(
@@ -20,7 +19,6 @@ class NotificationService(
     private val templateService: NotificationTemplateService,
     private val deliveryProperties: NotificationDeliveryProperties,
 ) {
-    @Transactional
     fun notifyPaymentSucceeded(event: PaymentSucceededEvent): NotificationResponse =
         createAndSend(
             recipientUserId = event.userId,
@@ -29,7 +27,6 @@ class NotificationService(
             message = templateService.paymentSucceeded(event),
         )
 
-    @Transactional
     fun notifyPaymentFailed(event: PaymentFailedEvent): NotificationResponse =
         createAndSend(
             recipientUserId = event.userId,
@@ -38,7 +35,6 @@ class NotificationService(
             message = templateService.paymentFailed(event),
         )
 
-    @Transactional
     fun notifyEventCancelled(event: EventCancelledEvent): NotificationResponse =
         createAndSend(
             recipientUserId = null,
@@ -47,13 +43,11 @@ class NotificationService(
             message = templateService.eventCancelled(event),
         )
 
-    @Transactional(readOnly = true)
     fun getNotification(id: UUID): NotificationResponse =
         notificationRepository.findById(id)
             .orElseThrow { NotificationNotFoundException(id) }
             .toResponse()
 
-    @Transactional(readOnly = true)
     fun getNotificationsForUser(userId: UUID): List<NotificationResponse> =
         notificationRepository.findAllByRecipientUserIdOrderByCreatedAtDesc(userId).map(Notification::toResponse)
 

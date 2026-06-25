@@ -35,7 +35,7 @@ The platform models the full booking lifecycle: organizers publish bookable inve
 | `notification-service` | Asynchronous transactional notifications |
 | `importer-service` | External source imports into the booking catalog |
 
-Supporting infrastructure includes PostgreSQL, Kafka, Redis, Keycloak, LocalStack, Prometheus, Grafana, Loki, Tempo, and the OpenTelemetry Collector.
+Supporting infrastructure includes PostgreSQL, MongoDB, Kafka, Redis, Keycloak, LocalStack, Prometheus, Grafana, Loki, Tempo, and the OpenTelemetry Collector.
 
 ## Repository Layout
 
@@ -45,8 +45,8 @@ user-service/          # users, encryption keys, GDPR deletion
 event-service/         # bookable catalog, capacity, organizer workflows
 ticket-service/        # bookings, tickets, encrypted ticket payloads
 payment-service/       # payments, receipts, S3 storage
-notification-service/  # asynchronous notification records
-importer-service/      # Java-based external catalog imports
+notification-service/  # MongoDB-backed asynchronous notification records
+importer-service/      # Java-based MongoDB-backed external catalog imports
 docs/                  # architecture and smoke-test documentation
 k8s/                   # Kubernetes base manifests
 keycloak/              # local realm import
@@ -68,6 +68,8 @@ scripts/               # local helper and smoke-test scripts
 | Keycloak | `8088` | Local identity provider |
 | Kafka | `19092` | External Kafka listener |
 | Redis | `6379` | Local cache |
+| Notification MongoDB | `27017` | Notification document store |
+| Importer MongoDB | `27018` | Import history document store |
 | LocalStack | `4566` | S3-compatible local storage |
 | Grafana | `3000` | Observability dashboards |
 | Prometheus | `9090` | Metrics and alerts |

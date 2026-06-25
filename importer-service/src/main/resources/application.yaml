@@ -1,19 +1,10 @@
 spring:
   application:
     name: importer-service
-  datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5437/importer_service}
-    username: ${SPRING_DATASOURCE_USERNAME:importer_service}
-    password: ${SPRING_DATASOURCE_PASSWORD:importer_service}
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    open-in-view: false
-    properties:
-      hibernate:
-        format_sql: true
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/importer_service}
+      uuid-representation: standard
 
 server:
   port: ${SERVER_PORT:8086}
