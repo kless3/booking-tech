@@ -151,3 +151,4 @@ The CI pipeline runs the same build and test command through a GitHub Actions ma
 - [E2E Purchase Flow](docs/e2e.md)
 - [Observability](docs/observability.md)
 - [Kubernetes](k8s/README.md)
+- [Scripts](scripts/README.md)
