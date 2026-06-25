@@ -146,6 +146,7 @@ The CI pipeline runs the same build and test command through a GitHub Actions ma
 - [Event Service](event-service/README.md)
 - [Ticket Service](ticket-service/README.md)
 - [Payment Service](payment-service/README.md)
+- [Notification Service](notification-service/README.md)
 - [E2E Purchase Flow](docs/e2e.md)
 - [Observability](docs/observability.md)
 - [Kubernetes](k8s/README.md)
